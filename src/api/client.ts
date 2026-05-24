@@ -17,7 +17,21 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}) {
     headers,
   });
 
-  const data = await response.json();
+  const text = await response.text();
+  let data: { message?: string; data?: unknown };
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error(
+      'Server returned invalid JSON. Is the PHP backend running on http://localhost:8000?'
+    );
+  }
+
+  if (!text) {
+    throw new Error(
+      'Empty response from server. Start the PHP backend (run start-backend.bat or start-all.bat).'
+    );
+  }
 
   if (!response.ok) {
     if (response.status === 401) {
