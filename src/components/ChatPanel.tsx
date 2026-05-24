@@ -94,13 +94,24 @@ export default function ChatPanel({ isOpen, onClose }: ChatPanelProps) {
           body: JSON.stringify({ text: text.trim() }),
         });
 
-        const assistantMsg: Message = {
-          id: (Date.now() + 1).toString(),
-          role: 'assistant',
-          content: `I parsed that as a transaction. Does this look right?`,
-          parsedTx: parsed,
-        };
-        setMessages(prev => [...prev, assistantMsg]);
+        // Check if multiple transactions were parsed
+        if (parsed.multiple && parsed.transactions) {
+          const assistantMsg: Message = {
+            id: (Date.now() + 1).toString(),
+            role: 'assistant',
+            content: `I found ${parsed.transactions.length} transactions in your message. Do these look right?`,
+            parsedTx: parsed.transactions, // Array of transactions
+          };
+          setMessages(prev => [...prev, assistantMsg]);
+        } else {
+          const assistantMsg: Message = {
+            id: (Date.now() + 1).toString(),
+            role: 'assistant',
+            content: `I parsed that as a transaction. Does this look right?`,
+            parsedTx: parsed,
+          };
+          setMessages(prev => [...prev, assistantMsg]);
+        }
       } else {
         // Regular chat
         const data = await apiFetch('/ai/chat', {
@@ -320,53 +331,108 @@ export default function ChatPanel({ isOpen, onClose }: ChatPanelProps) {
 
                 {/* Parsed Transaction Confirmation */}
                 {msg.parsedTx && (
-                  <div className="bg-[#1e1e1e] border border-[#4edea3]/20 rounded-xl p-3 space-y-2">
-                    <div className="text-[10px] uppercase tracking-wider text-[#4edea3] font-mono font-semibold">Parsed Transaction</div>
-                    <div className="grid grid-cols-2 gap-1.5 text-[11px]">
-                      <div className="text-[#bbcabf]">Title</div>
-                      <div className="text-white font-medium">{msg.parsedTx.title}</div>
-                      <div className="text-[#bbcabf]">Amount</div>
-                      <div className={`font-bold ${msg.parsedTx.amount < 0 ? 'text-[#ffb4ab]' : 'text-[#4edea3]'}`}>
-                        ${Math.abs(msg.parsedTx.amount).toFixed(2)}
-                      </div>
-                      <div className="text-[#bbcabf]">Category</div>
-                      <div className="text-white">{msg.parsedTx.category}</div>
-                      <div className="text-[#bbcabf]">Date</div>
-                      <div className="text-white">{msg.parsedTx.date}</div>
-                      <div className="text-[#bbcabf]">Type</div>
-                      <div className="text-white capitalize">{msg.parsedTx.type}</div>
-                    </div>
-
-                    {/* Receipt line items */}
-                    {msg.receiptData?.items && msg.receiptData.items.length > 0 && (
-                      <div className="border-t border-white/10 pt-2 mt-2">
-                        <div className="text-[10px] uppercase tracking-wider text-[#bbcabf] font-mono mb-1">Line Items</div>
-                        {msg.receiptData.items.map((item: any, i: number) => (
-                          <div key={i} className="flex justify-between text-[11px]">
-                            <span className="text-[#e5e2e1]">{item.name}</span>
-                            <span className="text-[#bbcabf]">${(item.price || 0).toFixed(2)}</span>
+                  <div className="space-y-2">
+                    {Array.isArray(msg.parsedTx) ? (
+                      // Multiple transactions
+                      <>
+                        {msg.parsedTx.map((tx, idx) => (
+                          <div key={idx} className="bg-[#1e1e1e] border border-[#4edea3]/20 rounded-xl p-3 space-y-2">
+                            <div className="text-[10px] uppercase tracking-wider text-[#4edea3] font-mono font-semibold">
+                              Transaction {idx + 1} of {msg.parsedTx.length}
+                            </div>
+                            <div className="grid grid-cols-2 gap-1.5 text-[11px]">
+                              <div className="text-[#bbcabf]">Title</div>
+                              <div className="text-white font-medium">{tx.title}</div>
+                              <div className="text-[#bbcabf]">Amount</div>
+                              <div className={`font-bold ${tx.amount < 0 ? 'text-[#ffb4ab]' : 'text-[#4edea3]'}`}>
+                                ${Math.abs(tx.amount).toFixed(2)}
+                              </div>
+                              <div className="text-[#bbcabf]">Category</div>
+                              <div className="text-white">{tx.category}</div>
+                              <div className="text-[#bbcabf]">Date</div>
+                              <div className="text-white">{tx.date}</div>
+                              <div className="text-[#bbcabf]">Type</div>
+                              <div className="text-white capitalize">{tx.type}</div>
+                            </div>
                           </div>
                         ))}
-                      </div>
-                    )}
+                        <div className="flex gap-2 pt-1">
+                          <button
+                            onClick={async () => {
+                              for (const tx of msg.parsedTx) {
+                                await handleAddTransaction(tx);
+                              }
+                            }}
+                            className="flex-1 bg-[#4edea3] text-[#003824] text-[11px] font-bold py-2 rounded-lg hover:bg-[#6ffbbe] transition-colors cursor-pointer"
+                          >
+                            ✅ Add All {msg.parsedTx.length} Transactions
+                          </button>
+                          <button
+                            onClick={() => {
+                              const dismissMsg: Message = { id: Date.now().toString(), role: 'assistant', content: 'No problem! Transactions discarded.' };
+                              setMessages(prev => [...prev, dismissMsg]);
+                            }}
+                            className="px-3 bg-white/5 text-[#bbcabf] text-[11px] py-2 rounded-lg hover:bg-white/10 transition-colors cursor-pointer border border-white/10"
+                          >
+                            ✕ Discard
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      // Single transaction
+                      <>
+                        <div className="bg-[#1e1e1e] border border-[#4edea3]/20 rounded-xl p-3 space-y-2">
+                          <div className="text-[10px] uppercase tracking-wider text-[#4edea3] font-mono font-semibold">Parsed Transaction</div>
+                          <div className="grid grid-cols-2 gap-1.5 text-[11px]">
+                            <div className="text-[#bbcabf]">Title</div>
+                            <div className="text-white font-medium">{msg.parsedTx.title}</div>
+                            <div className="text-[#bbcabf]">Amount</div>
+                            <div className={`font-bold ${msg.parsedTx.amount < 0 ? 'text-[#ffb4ab]' : 'text-[#4edea3]'}`}>
+                              ${Math.abs(msg.parsedTx.amount).toFixed(2)}
+                            </div>
+                            <div className="text-[#bbcabf]">Category</div>
+                            <div className="text-white">{msg.parsedTx.category}</div>
+                            <div className="text-[#bbcabf]">Date</div>
+                            <div className="text-white">{msg.parsedTx.date}</div>
+                            <div className="text-[#bbcabf]">Type</div>
+                            <div className="text-white capitalize">{msg.parsedTx.type}</div>
+                          </div>
 
-                    <div className="flex gap-2 pt-1">
-                      <button
-                        onClick={() => handleAddTransaction(msg.parsedTx)}
-                        className="flex-1 bg-[#4edea3] text-[#003824] text-[11px] font-bold py-2 rounded-lg hover:bg-[#6ffbbe] transition-colors cursor-pointer"
-                      >
-                        ✅ Add Transaction
-                      </button>
-                      <button
-                        onClick={() => {
-                          const dismissMsg: Message = { id: Date.now().toString(), role: 'assistant', content: 'No problem! Transaction discarded.' };
-                          setMessages(prev => [...prev, dismissMsg]);
-                        }}
-                        className="px-3 bg-white/5 text-[#bbcabf] text-[11px] py-2 rounded-lg hover:bg-white/10 transition-colors cursor-pointer border border-white/10"
-                      >
-                        ✕ Discard
-                      </button>
-                    </div>
+                          {/* Receipt line items */}
+                          {msg.receiptData?.items && msg.receiptData.items.length > 0 && (
+                            <div className="border-t border-white/10 pt-2 mt-2">
+                              <div className="text-[10px] uppercase tracking-wider text-[#bbcabf] font-mono mb-1">Line Items</div>
+                              {msg.receiptData.items.map((item: any, i: number) => (
+                                <div key={i} className="flex justify-between text-[11px]">
+                                  <span className="text-[#e5e2e1]">{item.name}</span>
+                                  <span className="text-[#bbcabf]">${(item.price || 0).toFixed(2)}</span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="flex gap-2 pt-1">
+                          <button
+                            onClick={() => handleAddTransaction(msg.parsedTx)}
+                            className="flex-1 bg-[#4edea3] text-[#003824] text-[11px] font-bold py-2 rounded-lg hover:bg-[#6ffbbe] transition-colors cursor-pointer"
+                          >
+                            ✅ Add Transaction
+                          </button>
+                          <button
+                            onClick={() => {
+                              const dismissMsg: Message = { id: Date.now().toString(), role: 'assistant', content: 'No problem! Transaction discarded.' };
+                              setMessages(prev => [...prev, dismissMsg]);
+                            }}
+                            className="px-3 bg-white/5 text-[#bbcabf] text-[11px] py-2 rounded-lg hover:bg-white/10 transition-colors cursor-pointer border border-white/10"
+                          >
+                            ✕ Discard
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
                   </div>
                 )}
               </div>
