@@ -1,0 +1,6 @@
+{
+  "name": "FinPrecision",
+  "description": "A high-precision financial dashboard with bifurcated admin and user portals.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
