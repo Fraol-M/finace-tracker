@@ -3,7 +3,7 @@ import { UserAccount } from '../types';
 import { Search, Bell, Trash2, Edit2, AlertTriangle, Check, X, ShieldAlert, Users, MoreVertical } from 'lucide-react';
 import { validateEmail, validatePhone, validateUsername } from '../utils/validation';
 import Pagination from './Pagination';
-import { apiFetch } from '../api/client';
+import { fetchUsers, updateUser, deleteUser } from '../api/users';
 
 interface AdminPageProps {
   onUpdateUser: (updatedUser: UserAccount) => void;
@@ -46,7 +46,7 @@ export default function AdminPage({ onUpdateUser }: AdminPageProps) {
 
   const loadUsers = async () => {
     try {
-      const data = await apiFetch('/users');
+      const data = await fetchUsers();
       setUsers(data);
     } catch (err) {
       console.error('Failed to load users', err);
@@ -159,10 +159,7 @@ export default function AdminPage({ onUpdateUser }: AdminPageProps) {
     };
 
     try {
-      const data = await apiFetch('/users/update', {
-        method: 'PUT',
-        body: JSON.stringify(updatedData),
-      });
+      const data = await updateUser(updatedData);
 
       const updatedUser = { ...user, ...data };
       setUsers(prev => prev.map(u => u.id === user.id ? updatedUser : u));
@@ -187,10 +184,7 @@ export default function AdminPage({ onUpdateUser }: AdminPageProps) {
   const handleConfirmDelete = async () => {
     if (userToDelete) {
       try {
-        await apiFetch('/users/delete', {
-          method: 'DELETE',
-          body: JSON.stringify({ id: userToDelete.id }),
-        });
+        await deleteUser(userToDelete.id);
         setUsers(prev => prev.filter(u => u.id !== userToDelete.id));
         setIsDeleteModalOpen(false);
         setUserToDelete(null);

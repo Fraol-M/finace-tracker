@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Transaction } from '../types';
-import { useFinance } from '../data/financeData';
+import { useFinance } from '../contexts/FinanceContext';
+import { getAllCategories } from '../utils/categories';
 import { ArrowUp, ArrowDown, Search, ListFilter, ChevronRight, MoreVertical, Briefcase, TrendingUp, Check, X, Trash2, Edit2 } from 'lucide-react';
 import { getCategoryStyle } from '../utils/categoryHelpers';
 import Pagination from './Pagination';
@@ -108,11 +109,10 @@ export default function TablePage() {
     setActiveMenuTxId(txId === activeMenuTxId ? null : txId);
   };
 
-  const dynamicCategories = useMemo(() => {
-    const existing = transactions.map(t => t.category);
-    const defaults = ['Infrastructure', 'Software', 'Meals', 'Travel', 'Consulting', 'Operations', 'Salary', 'Investments', 'Revenue', 'Marketing'];
-    return Array.from(new Set([...defaults, ...existing]));
-  }, [transactions]);
+  const dynamicCategories = useMemo(
+    () => getAllCategories(transactions),
+    [transactions]
+  );
 
   // Filter transactions belonging to the selected month representation
   const monthTransactions = useMemo(() => {

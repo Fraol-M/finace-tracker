@@ -1,20 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { UserAccount, Transaction } from './types';
-import { INITIAL_USERS } from './data';
-import { FinanceProvider } from './data/financeData';
+import { UserAccount } from './types';
+import { FinanceProvider } from './contexts/FinanceContext';
+import { getCurrentUser, logout } from './api/auth';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import TablePage from './components/TablePage';
 import YearlyPage from './components/YearlyPage';
 import AdminPage from './components/AdminPage';
 import Sidebar from './components/Sidebar';
-import { 
-  Settings, 
-  Menu,
-  LogOut,
-  User as UserIcon
-} from 'lucide-react';
-import { apiFetch } from './api/client';
+import { Menu, LogOut } from 'lucide-react';
 
 export default function App() {
   return (
@@ -39,7 +33,7 @@ function AppContent() {
         return;
       }
       try {
-        const data = await apiFetch('/auth/me');
+        const data = await getCurrentUser();
         setCurrentUser(data.user);
       } catch (err) {
         localStorage.removeItem('fp_token');
@@ -73,7 +67,7 @@ function AppContent() {
 
   const handleLogout = async () => {
     try {
-      await apiFetch('/auth/logout', { method: 'POST' });
+      await logout();
     } catch (e) {
       // ignore
     }

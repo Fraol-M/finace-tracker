@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Transaction, UserAccount } from '../types';
-import { useFinance, currentMonth, currentYear, CURRENT_MONTH_PREFIX } from '../data/financeData';
+import { UserAccount, NewTransaction } from '../types';
+import { useFinance } from '../contexts/FinanceContext';
+import { currentMonth, currentYear, CURRENT_MONTH_PREFIX } from '../constants/date';
+import { getCategoriesForType, defaultCategoryForType } from '../utils/categories';
 import { PlusCircle, MinusCircle, Monitor, DollarSign, Calendar, X, Utensils, Plane, Tv, Landmark, HelpCircle, Briefcase, Award } from 'lucide-react';
 import { getCategoryIconName, renderCategoryIcon, getCategoryStyle } from '../utils/categoryHelpers';
 
@@ -65,16 +67,10 @@ export default function Dashboard({ currentUser }: DashboardProps) {
 
   const maxWeekly = Math.max(w1Expense, w2Expense, w3Expense, w4Expense, 1000);
 
-  // Dynamic category list from standard defaults as well as existing ones
-  const dynamicCategories = React.useMemo(() => {
-    const existing = transactions
-      .filter(t => t.type === modalType)
-      .map(t => t.category);
-    const defaults = modalType === 'expense' 
-      ? ['Infrastructure', 'Meals', 'Travel', 'Software', 'Marketing', 'Operations']
-      : ['Consulting', 'Salary', 'Investments', 'Revenue'];
-    return Array.from(new Set([...defaults, ...existing]));
-  }, [transactions, modalType]);
+  const dynamicCategories = React.useMemo(
+    () => getCategoriesForType(transactions, modalType),
+    [transactions, modalType]
+  );
 
   const hasMonthTxs = currentMonthTransactions.length > 0;
 
@@ -100,7 +96,7 @@ export default function Dashboard({ currentUser }: DashboardProps) {
     setTitle('');
     setAmount('');
     setDate(new Date().toISOString().split('T')[0]);
-    setCategory(type === 'income' ? 'Consulting' : 'Infrastructure');
+    setCategory(defaultCategoryForType(type));
   };
 
   const handleSaveTransaction = (e: React.FormEvent) => {
@@ -108,14 +104,13 @@ export default function Dashboard({ currentUser }: DashboardProps) {
     if (!title.trim() || !amount || parseFloat(amount) <= 0) return;
 
     const realAmount = Math.abs(parseFloat(amount));
-    const newTx: Transaction = {
-      id: Date.now(),
+    const newTx: NewTransaction = {
       title: title.trim(),
       amount: modalType === 'expense' ? -realAmount : realAmount,
       category: category,
       date: date,
       type: modalType,
-      icon: getCategoryIconName(category)
+      icon: getCategoryIconName(category),
     };
 
     addTransaction(newTx);

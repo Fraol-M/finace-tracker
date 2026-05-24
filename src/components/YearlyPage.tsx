@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Landmark, TrendingUp, BarChart2, DollarSign, Activity } from 'lucide-react';
-import { useFinance, YEARLY_MONTHS_CONFIG, currentYear } from '../data/financeData';
+import { useFinance } from '../contexts/FinanceContext';
+import { YEARLY_MONTHS_CONFIG, currentYear } from '../constants/date';
 
 export default function YearlyPage() {
   const { transactions } = useFinance();
@@ -41,25 +42,39 @@ export default function YearlyPage() {
     });
   }, [transactions]);
 
+  const priorYearNet = useMemo(() => {
+    const prefix = `${currentYear - 1}-`;
+    const priorTxs = transactions.filter((t) => t.date.startsWith(prefix));
+    const income = priorTxs
+      .filter((t) => t.type === 'income')
+      .reduce((sum, t) => sum + t.amount, 0);
+    const expense = Math.abs(
+      priorTxs
+        .filter((t) => t.type === 'expense')
+        .reduce((sum, t) => sum + t.amount, 0)
+    );
+    return income - expense;
+  }, [transactions]);
+
   // Aggregate yearly metrics
   const yearlyMetrics = useMemo(() => {
     const totalIncome = dynamicMonthlyMetrics.reduce((sum, m) => sum + m.income, 0);
     const totalExpenses = dynamicMonthlyMetrics.reduce((sum, m) => sum + m.expense, 0);
     const netFlow = totalIncome - totalExpenses;
-    
-    // Calculate relative growth directly
-    const yoyGrowthDeg = totalExpenses > 0 ? (netFlow / totalExpenses) * 100 : 0;
-    const yoyGrowth = yoyGrowthDeg >= 0 
-      ? `+${yoyGrowthDeg.toFixed(1)}%` 
-      : `${yoyGrowthDeg.toFixed(1)}%`;
+
+    const yoyGrowthDeg =
+      priorYearNet !== 0 ? ((netFlow - priorYearNet) / Math.abs(priorYearNet)) * 100 : 0;
+    const yoyGrowth =
+      yoyGrowthDeg >= 0 ? `+${yoyGrowthDeg.toFixed(1)}%` : `${yoyGrowthDeg.toFixed(1)}%`;
 
     return {
       totalIncome,
       totalExpenses,
       netFlow,
-      yoyGrowth
+      yoyGrowth,
+      priorYearNet,
     };
-  }, [dynamicMonthlyMetrics]);
+  }, [dynamicMonthlyMetrics, priorYearNet]);
 
   // Dynamic maximum caps for graph layouts
   const maxExpenses = useMemo(() => {
@@ -129,7 +144,9 @@ export default function YearlyPage() {
                     <TrendingUp className="w-3 h-3" />
                     {yearlyMetrics.yoyGrowth} YoY
                   </span>
-                  <span className="text-xs text-[#bbcabf] ml-2">vs Last Year ($1,093,336)</span>
+                  <span className="text-xs text-[#bbcabf] ml-2">
+                    vs Last Year (${Math.floor(yearlyMetrics.priorYearNet).toLocaleString()})
+                  </span>
                 </div>
               </div>
             </div>

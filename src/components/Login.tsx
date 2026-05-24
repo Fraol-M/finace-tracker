@@ -7,7 +7,7 @@ import {
   validatePassword, 
   validateUsername 
 } from '../utils/validation';
-import { apiFetch } from '../api/client';
+import { login, signup } from '../api/auth';
 
 interface LoginProps {
   onLoginSuccess: (user: UserAccount, token: string) => void;
@@ -51,13 +51,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
     }
 
     try {
-      const data = await apiFetch('/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({
-          identifier: loginUser,
-          password: loginPass
-        })
-      });
+      const data = await login(loginUser, loginPass);
       onLoginSuccess(data.user, data.token);
     } catch (err: any) {
       setLoginError(err.message || 'Invalid username/email or password');
@@ -69,15 +63,12 @@ export default function Login({ onLoginSuccess }: LoginProps) {
     if (!canSignup) return;
 
     try {
-      await apiFetch('/auth/signup', {
-        method: 'POST',
-        body: JSON.stringify({
-          fullName: fullName,
-          username: signupUsername,
-          email: signupEmail,
-          phone: signupPhone,
-          password: signupPass
-        })
+      await signup({
+        fullName,
+        username: signupUsername,
+        email: signupEmail,
+        phone: signupPhone,
+        password: signupPass,
       });
 
       setSignupSuccess(`Account created! You can now log in with "${signupUsername}"`);

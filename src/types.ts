@@ -6,7 +6,6 @@ export interface UserAccount {
   phone: string;
   role: 'admin' | 'user';
   isUnverified?: boolean;
-  password?: string;
 }
 
 export interface Transaction {
@@ -20,10 +19,5 @@ export interface Transaction {
   uid?: string;
 }
 
-export interface MonthlyMetric {
-  month: string;
-  shortMonth: string;
-  expense: number;
-  income: number;
-  net: number;
-}
+/** Payload for creating a transaction (server assigns id). */
+export type NewTransaction = Omit<Transaction, 'id' | 'uid'>;
