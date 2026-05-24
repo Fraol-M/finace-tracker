@@ -3,6 +3,7 @@ import { Transaction, UserAccount } from '../types';
 import { useFinance, currentMonth, currentYear, CURRENT_MONTH_PREFIX } from '../data/financeData';
 import { PlusCircle, MinusCircle, Monitor, DollarSign, Calendar, X, Utensils, Plane, Tv, Landmark, HelpCircle, Briefcase, Award } from 'lucide-react';
 import { getCategoryIconName, renderCategoryIcon, getCategoryStyle } from '../utils/categoryHelpers';
+import InsightsCard from './InsightsCard';
 
 interface DashboardProps {
   currentUser: UserAccount;
@@ -152,6 +153,9 @@ export default function Dashboard({ currentUser }: DashboardProps) {
           </button>
         </div>
       </div>
+
+      {/* AI Insights Prediction Card */}
+      <InsightsCard />
 
       {/* Main Stats Bento Grids */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

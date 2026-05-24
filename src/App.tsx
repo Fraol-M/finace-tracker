@@ -8,11 +8,13 @@ import TablePage from './components/TablePage';
 import YearlyPage from './components/YearlyPage';
 import AdminPage from './components/AdminPage';
 import Sidebar from './components/Sidebar';
+import ChatPanel from './components/ChatPanel';
 import { 
   Settings, 
   Menu,
   LogOut,
-  User as UserIcon
+  User as UserIcon,
+  Sparkles
 } from 'lucide-react';
 import { apiFetch } from './api/client';
 
@@ -29,6 +31,7 @@ function AppContent() {
   const [activeTab, setActiveTab] = useState<string>('dashboard');
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   // Verify token on mount
   useEffect(() => {
@@ -132,6 +135,7 @@ function AppContent() {
           handleLogout={handleLogout}
           isMobileSidebarOpen={isMobileSidebarOpen}
           setIsMobileSidebarOpen={setIsMobileSidebarOpen}
+          onOpenChat={() => setIsChatOpen(true)}
         />
 
         {/* 2. MAIN CORE LAYOUT FRAME */}
@@ -214,6 +218,22 @@ function AppContent() {
           </div>
 
         </main>
+
+        {/* Floating AI Assistant Button */}
+        {currentUser.role === 'user' && (
+          <button
+            onClick={() => setIsChatOpen(true)}
+            className={`fixed bottom-6 right-6 w-14 h-14 rounded-2xl bg-gradient-to-br from-[#4edea3] to-[#2ebd82] flex items-center justify-center shadow-lg shadow-[#4edea3]/30 hover:shadow-[#4edea3]/50 hover:scale-105 transition-all z-50 cursor-pointer ${isChatOpen ? 'hidden' : ''}`}
+            title="Open AI Assistant"
+          >
+            <Sparkles className="w-6 h-6 text-[#003824]" />
+          </button>
+        )}
+
+        {/* AI Chat Panel */}
+        {currentUser.role === 'user' && (
+          <ChatPanel isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+        )}
       </div>
     </FinanceProvider>
   );

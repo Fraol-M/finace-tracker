@@ -7,7 +7,8 @@ import {
   Users, 
   LogOut, 
   Fingerprint, 
-  X 
+  X,
+  Sparkles
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -17,6 +18,7 @@ interface SidebarProps {
   handleLogout: () => void;
   isMobileSidebarOpen: boolean;
   setIsMobileSidebarOpen: (open: boolean) => void;
+  onOpenChat?: () => void;
 }
 
 export default function Sidebar({
@@ -25,7 +27,8 @@ export default function Sidebar({
   setActiveTab,
   handleLogout,
   isMobileSidebarOpen,
-  setIsMobileSidebarOpen
+  setIsMobileSidebarOpen,
+  onOpenChat
 }: SidebarProps) {
   
   // Render active class names dynamically to avoid inline duplications
@@ -72,6 +75,17 @@ export default function Sidebar({
           >
             <Calendar className="w-4 h-4" />
             <span>Yearly</span>
+          </button>
+
+          {/* AI Assistant divider + button */}
+          <div className="my-3 border-t border-white/5" />
+          <button 
+            id="linkAI"
+            onClick={() => { onOpenChat?.(); setIsMobileSidebarOpen(false); }}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded text-xs uppercase font-mono tracking-wider transition-all cursor-pointer text-[#bbcabf] hover:text-[#4edea3] hover:bg-[#4edea3]/5 group"
+          >
+            <Sparkles className="w-4 h-4 group-hover:text-[#4edea3]" />
+            <span>AI Assistant</span>
           </button>
         </>
       );

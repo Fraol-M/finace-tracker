@@ -29,6 +29,12 @@ $routes = [
     'POST /api/transactions'         => __DIR__ . '/api/transactions/create.php',
     'PUT /api/transactions/update'   => __DIR__ . '/api/transactions/update.php',
     'DELETE /api/transactions/delete' => __DIR__ . '/api/transactions/delete.php',
+
+    // AI
+    'POST /api/ai/chat'              => __DIR__ . '/api/ai/chat.php',
+    'POST /api/ai/parse-transaction' => __DIR__ . '/api/ai/parse-transaction.php',
+    'POST /api/ai/parse-receipt'     => __DIR__ . '/api/ai/parse-receipt.php',
+    'POST /api/ai/predict'           => __DIR__ . '/api/ai/predict.php',
 ];
 
 $routeKey = "$method $uri";
