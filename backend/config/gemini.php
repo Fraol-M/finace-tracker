@@ -35,7 +35,7 @@ function getGeminiApiKey(): string {
  */
 function callGemini(string $systemPrompt, array $messages): string {
     $apiKey = getGeminiApiKey();
-    $model = 'gemini-2.0-flash';
+    $model = 'gemini-2.5-flash';
     $url = "https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent";
 
     // Build contents array
@@ -72,7 +72,7 @@ function callGemini(string $systemPrompt, array $messages): string {
  */
 function callGeminiVision(string $systemPrompt, string $textPrompt, string $base64Image, string $mimeType = 'image/jpeg'): string {
     $apiKey = getGeminiApiKey();
-    $model = 'gemini-2.0-flash';
+    $model = 'gemini-2.5-flash';
     $url = "https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent";
 
     $payload = [

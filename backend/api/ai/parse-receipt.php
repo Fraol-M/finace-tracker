@@ -38,7 +38,7 @@ RULES:
 1. Extract: store/vendor name (as title), total amount, date, individual line items if visible
 2. The transaction type is always 'expense' for receipts
 3. Amount should be NEGATIVE (it's an expense)
-4. If you can read the date from the receipt, use it (format: YYYY-MM-DD). Otherwise use today: {$today}
+4. **IMPORTANT**: Always use TODAY'S DATE ({$today}) for the transaction, regardless of what date appears on the receipt. Users want to track when they're logging the expense, not the original receipt date.
 5. Pick the best category from: Food, Transport, Shopping, Entertainment, Bills, Health, Education, Travel, Infrastructure, Software, Operations, Other
 6. Pick the best icon from: restaurant, shopping_cart, local_taxi, movie, receipt, medical_services, school, flight, computer, subscriptions, description, category
 7. Return ONLY valid JSON, no markdown code fences, no explanation.
@@ -49,7 +49,7 @@ OUTPUT FORMAT:
   \"title\": \"Store Name Purchase\",
   \"amount\": -00.00,
   \"category\": \"Category\",
-  \"date\": \"YYYY-MM-DD\",
+  \"date\": \"{$today}\",
   \"type\": \"expense\",
   \"icon\": \"icon_name\",
   \"items\": [
