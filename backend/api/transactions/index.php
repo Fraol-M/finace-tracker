@@ -1,7 +1,7 @@
 <?php
-/**
- * GET /api/transactions
- * Get all transactions for the authenticated user.
+/*
+ GET /api/transactions
+ Get all transactions for the authenticated user.
  */
 
 require_once __DIR__ . '/../../middleware/auth.php';
