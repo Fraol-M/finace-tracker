@@ -8,34 +8,30 @@ import Pagination from "./Pagination";
 export default function TablePage() {
   const { transactions, updateTransaction, deleteTransaction } = useFinance();
 
-  // Dynamic list of available selecting months derived from existing transactions + current month representation
+  // months derived from existing transactions + current month representation
   const monthOptions = useMemo(() => {
     const dates = transactions.map((t) => {
       const parts = t.date.split("-");
       return `${parts[0]}-${parts[1]}`; // YYYY-MM
     });
 
-    // Always inject the current month so the user has an active lane immediately
     const now = new Date();
     const currentYM = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
     if (!dates.includes(currentYM)) {
       dates.push(currentYM);
     }
 
-    // De-duplicate year-months
     const uniqueYMs: string[] = Array.from(new Set(dates));
 
-    // Sort descending (newest first)
     uniqueYMs.sort((a, b) => b.localeCompare(a));
 
-    // Group into readable keys + filter prefixes
     return uniqueYMs.map((ym) => {
       const [y, m] = ym.split("-");
       const dateObj = new Date(parseInt(y), parseInt(m) - 1, 1);
       const name = new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric" }).format(dateObj);
       return {
-        key: name, // e.g. "May 2026"
-        prefix: ym, // e.g. "2026-05"
+        key: name,
+        prefix: ym,
       };
     });
   }, [transactions]);
@@ -50,9 +46,8 @@ export default function TablePage() {
   const [sortField, setSortField] = useState<"title" | "amount" | "date">("date");
   const [sortAsc, setSortAsc] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 7; // Fixed to show exactly 7 rows as requested by user
+  const itemsPerPage = 7;
 
-  // Inline editing row states
   const [editingTxId, setEditingTxId] = useState<number | null>(null);
   const [editTitle, setEditTitle] = useState("");
   const [editCategory, setEditCategory] = useState("");
@@ -62,7 +57,6 @@ export default function TablePage() {
 
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // Close menus on click away
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -114,7 +108,6 @@ export default function TablePage() {
     return Array.from(new Set([...defaults, ...existing]));
   }, [transactions]);
 
-  // Filter transactions belonging to the selected month representation
   const monthTransactions = useMemo(() => {
     const match = monthOptions.find((o) => o.key === selectedMonth);
     const prefix = match ? match.prefix : `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`;
@@ -147,17 +140,14 @@ export default function TablePage() {
   const processedTransactions = useMemo(() => {
     let result = [...monthTransactions];
 
-    // Search query filter
     if (searchQuery.trim() !== "") {
       result = result.filter((t) => t.title.toLowerCase().includes(searchQuery.toLowerCase()) || t.category.toLowerCase().includes(searchQuery.toLowerCase()));
     }
 
-    // Tab category state filter
     if (currentFilter !== "all") {
       result = result.filter((t) => t.type === currentFilter);
     }
 
-    // Sort operations
     result.sort((a, b) => {
       let valA = a[sortField];
       let valB = b[sortField];
@@ -175,7 +165,6 @@ export default function TablePage() {
     return result;
   }, [monthTransactions, searchQuery, currentFilter, sortField, sortAsc]);
 
-  // Pagination bounds
   const totalResults = processedTransactions.length;
   const totalPages = Math.ceil(totalResults / itemsPerPage) || 1;
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -193,7 +182,7 @@ export default function TablePage() {
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-3xl font-bold text-[#e5e2e1]" id="monthly-title-h2">
@@ -202,7 +191,7 @@ export default function TablePage() {
           <p className="text-[#bbcabf] text-sm mt-1">Detailed ledger of all financial activities.</p>
         </div>
 
-        {/* Month Dropdown selector */}
+        {/* Month Dropdown */}
         <div className="relative">
           <select
             value={selectedMonth}
@@ -224,7 +213,6 @@ export default function TablePage() {
         </div>
       </div>
 
-      {/* Stats Bento Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Total Income */}
         <div className="bg-[#131313] border border-white/5 rounded-xl p-6 relative overflow-hidden group hover:border-[#4edea3]/30 transition-colors">
@@ -286,9 +274,7 @@ export default function TablePage() {
 
       {/* Ledger Table Canvas Container */}
       <div className="bg-[#201f1f] rounded-xl border border-white/5 flex flex-col shadow-sm" id="transaction-section">
-        {/* Table Toolbar controls */}
         <div className="p-4 border-b border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          {/* All, Income, Expense Segment Selectors */}
           <div className="flex p-1 bg-[#353534] rounded-lg inline-flex" id="filter-toggles">
             <button
               onClick={() => {
@@ -346,7 +332,6 @@ export default function TablePage() {
           </div>
         </div>
 
-        {/* Responsive Table Grid */}
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse whitespace-nowrap">
             <thead>
@@ -509,7 +494,6 @@ export default function TablePage() {
           </table>
         </div>
 
-        {/* Footer info & Pagination details */}
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}

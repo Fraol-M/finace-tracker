@@ -1,38 +1,29 @@
-import React, { useState } from 'react';
-import { UserAccount } from '../types';
-import { Shield, UserPlus, Info, CheckCircle2, AlertCircle } from 'lucide-react';
-import { 
-  validateEmail, 
-  validatePhone, 
-  validatePassword, 
-  validateUsername 
-} from '../utils/validation';
-import { apiFetch } from '../api/client';
+import React, { useState } from "react";
+import { UserAccount } from "../types";
+import { Shield, UserPlus, Info, CheckCircle2, AlertCircle } from "lucide-react";
+import { validateEmail, validatePhone, validatePassword, validateUsername } from "../utils/validation";
+import { apiFetch } from "../api/client";
 
 interface LoginProps {
   onLoginSuccess: (user: UserAccount, token: string) => void;
 }
 
 export default function Login({ onLoginSuccess }: LoginProps) {
-  // Login State
-  const [loginUser, setLoginUser] = useState('');
-  const [loginPass, setLoginPass] = useState('');
+  const [loginUser, setLoginUser] = useState("");
+  const [loginPass, setLoginPass] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-  const [loginError, setLoginError] = useState('');
+  const [loginError, setLoginError] = useState("");
 
-  // Signup State
-  const [fullName, setFullName] = useState('');
-  const [signupUsername, setSignupUsername] = useState('');
-  const [signupEmail, setSignupEmail] = useState('');
-  const [signupPhone, setSignupPhone] = useState('');
-  const [signupPass, setSignupPass] = useState('');
-  const [signupConfirm, setSignupConfirm] = useState('');
-  const [signupSuccess, setSignupSuccess] = useState('');
+  const [fullName, setFullName] = useState("");
+  const [signupUsername, setSignupUsername] = useState("");
+  const [signupEmail, setSignupEmail] = useState("");
+  const [signupPhone, setSignupPhone] = useState("");
+  const [signupPass, setSignupPass] = useState("");
+  const [signupConfirm, setSignupConfirm] = useState("");
+  const [signupSuccess, setSignupSuccess] = useState("");
 
-  // Space warning for Login username
   const hasLoginUserSpace = /\s/.test(loginUser);
 
-  // Signup button enablement conditions
   const isFullNameValid = fullName.trim().length > 0;
   const isUsernameValid = validateUsername(signupUsername);
   const isEmailValid = validateEmail(signupEmail);
@@ -43,24 +34,24 @@ export default function Login({ onLoginSuccess }: LoginProps) {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoginError('');
+    setLoginError("");
 
     if (hasLoginUserSpace) {
-      setLoginError('Credentials cannot contain spaces');
+      setLoginError("Credentials cannot contain spaces");
       return;
     }
 
     try {
-      const data = await apiFetch('/auth/login', {
-        method: 'POST',
+      const data = await apiFetch("/auth/login", {
+        method: "POST",
         body: JSON.stringify({
           identifier: loginUser,
-          password: loginPass
-        })
+          password: loginPass,
+        }),
       });
       onLoginSuccess(data.user, data.token);
     } catch (err: any) {
-      setLoginError(err.message || 'Invalid username/email or password');
+      setLoginError(err.message || "Invalid username/email or password");
     }
   };
 
@@ -69,28 +60,28 @@ export default function Login({ onLoginSuccess }: LoginProps) {
     if (!canSignup) return;
 
     try {
-      await apiFetch('/auth/signup', {
-        method: 'POST',
+      await apiFetch("/auth/signup", {
+        method: "POST",
         body: JSON.stringify({
           fullName: fullName,
           username: signupUsername,
           email: signupEmail,
           phone: signupPhone,
-          password: signupPass
-        })
+          password: signupPass,
+        }),
       });
 
       setSignupSuccess(`Account created! You can now log in with "${signupUsername}"`);
-      
+
       // Clear signup form
-      setFullName('');
-      setSignupUsername('');
-      setSignupEmail('');
-      setSignupPhone('');
-      setSignupPass('');
-      setSignupConfirm('');
+      setFullName("");
+      setSignupUsername("");
+      setSignupEmail("");
+      setSignupPhone("");
+      setSignupPass("");
+      setSignupConfirm("");
     } catch (err: any) {
-      alert(err.message || 'Signup failed');
+      alert(err.message || "Signup failed");
     }
   };
 
@@ -103,7 +94,6 @@ export default function Login({ onLoginSuccess }: LoginProps) {
       </div>
 
       <div className="z-10 w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-6">
-        
         {/* LOGIN FORM PANEL */}
         <div className="flex-1 bg-[#1e1e1e]/60 backdrop-blur-xl border border-white/5 rounded-xl p-8 flex flex-col justify-center transition-all duration-300 hover:shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
           <div className="mb-6">
@@ -111,7 +101,9 @@ export default function Login({ onLoginSuccess }: LoginProps) {
               <Shield className="text-[#4edea3] w-6 h-6" />
               <span className="text-[#4edea3] font-mono text-xs uppercase tracking-widest font-semibold">Secure Portal</span>
             </div>
-            <h1 className="text-3xl font-bold mb-2 text-[#4edea3]" id="login-title-h1">Login</h1>
+            <h1 className="text-3xl font-bold mb-2 text-[#4edea3]" id="login-title-h1">
+              Login
+            </h1>
             <p className="text-[#bbcabf] text-sm">Access your secure financial portal.</p>
           </div>
 
@@ -128,15 +120,11 @@ export default function Login({ onLoginSuccess }: LoginProps) {
               <input
                 type="text"
                 className={`w-full bg-[#161616] border rounded-lg px-4 py-2.5 text-sm text-[#e5e2e1] focus:outline-none transition-all placeholder:text-[#bbcabf]/30 ${
-                  loginUser === ''
-                    ? 'border-white/5'
-                    : hasLoginUserSpace
-                    ? 'border-[#ffb4ab] focus:ring-1 focus:ring-[#ffb4ab]'
-                    : 'border-[#4edea3] focus:ring-1 focus:ring-[#4edea3]'
+                  loginUser === "" ? "border-white/5" : hasLoginUserSpace ? "border-[#ffb4ab] focus:ring-1 focus:ring-[#ffb4ab]" : "border-[#4edea3] focus:ring-1 focus:ring-[#4edea3]"
                 }`}
                 placeholder="Enter admin or kaleb"
                 value={loginUser}
-                onChange={(e) => setLoginUser(e.target.value.replace(/\s/g, ''))}
+                onChange={(e) => setLoginUser(e.target.value.replace(/\s/g, ""))}
                 required
               />
               {hasLoginUserSpace && (
@@ -151,7 +139,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
               <input
                 type="password"
                 className={`w-full bg-[#161616] border rounded-lg px-4 py-2.5 text-sm text-[#e5e2e1] focus:outline-none transition-all placeholder:text-[#bbcabf]/30 ${
-                  loginPass === '' ? 'border-white/5' : 'border-[#4edea3] focus:ring-1 focus:ring-[#4edea3]'
+                  loginPass === "" ? "border-white/5" : "border-[#4edea3] focus:ring-1 focus:ring-[#4edea3]"
                 }`}
                 placeholder="••••••••"
                 value={loginPass}
@@ -170,12 +158,21 @@ export default function Login({ onLoginSuccess }: LoginProps) {
                 />
                 <span className="text-xs text-[#bbcabf]">Remember me</span>
               </label>
-              <a href="#forgot" onClick={(e) => { e.preventDefault(); alert("Access accounts via standard testing credentials:\n- Admin: log in with username 'admin', password 'admin'\n- User: log in with username 'kaleb', password 'user'"); }} className="text-xs text-[#4edea3] hover:underline">Forgot?</a>
+              <a
+                href="#forgot"
+                onClick={(e) => {
+                  e.preventDefault();
+                  alert("Access accounts via standard testing credentials:\n- Admin: log in with username 'admin', password 'admin'\n- User: log in with username 'kaleb', password 'user'");
+                }}
+                className="text-xs text-[#4edea3] hover:underline"
+              >
+                Forgot?
+              </a>
             </div>
 
             <button
               type="submit"
-              disabled={loginUser.trim() === '' || loginPass.trim() === '' || hasLoginUserSpace}
+              disabled={loginUser.trim() === "" || loginPass.trim() === "" || hasLoginUserSpace}
               className="w-full bg-[#4edea3] text-[#003824] font-semibold py-2.5 rounded-lg hover:bg-[#6ffbbe] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm mt-2"
             >
               Login
@@ -187,13 +184,21 @@ export default function Login({ onLoginSuccess }: LoginProps) {
             <div className="grid grid-cols-2 gap-2 text-[11px] text-[#bbcabf]">
               <div className="bg-[#111111]/80 rounded p-2 border border-white/5">
                 <p className="font-semibold text-[#4edea3]">Admin Account</p>
-                <p>Username: <code className="font-bold text-white bg-slate-800 px-1 rounded">admin</code></p>
-                <p>Password: <code className="font-bold text-white bg-slate-800 px-1 rounded">admin</code></p>
+                <p>
+                  Username: <code className="font-bold text-white bg-slate-800 px-1 rounded">admin</code>
+                </p>
+                <p>
+                  Password: <code className="font-bold text-white bg-slate-800 px-1 rounded">admin</code>
+                </p>
               </div>
               <div className="bg-[#111111]/80 rounded p-2 border border-white/5">
                 <p className="font-semibold text-[#4edea3]">User Account (Kaleb)</p>
-                <p>Username: <code className="font-bold text-white bg-slate-800 px-1 rounded">kaleb</code></p>
-                <p>Password: <code className="font-bold text-white bg-slate-800 px-1 rounded">user</code></p>
+                <p>
+                  Username: <code className="font-bold text-white bg-slate-800 px-1 rounded">kaleb</code>
+                </p>
+                <p>
+                  Password: <code className="font-bold text-white bg-slate-800 px-1 rounded">user</code>
+                </p>
               </div>
             </div>
           </div>
@@ -206,7 +211,9 @@ export default function Login({ onLoginSuccess }: LoginProps) {
               <UserPlus className="text-white w-6 h-6" />
               <span className="text-[#bbcabf] font-mono text-xs uppercase tracking-widest font-semibold">Join Ledger</span>
             </div>
-            <h2 className="text-3xl font-bold mb-2 text-white" id="signup-title-h2">Sign Up</h2>
+            <h2 className="text-3xl font-bold mb-2 text-white" id="signup-title-h2">
+              Sign Up
+            </h2>
             <p className="text-[#bbcabf] text-sm">Create an account to begin managing your wealth.</p>
           </div>
 
@@ -224,7 +231,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
                 <input
                   type="text"
                   className={`w-full bg-[#161616] border rounded-lg px-3 py-2 text-xs text-[#e5e2e1] focus:outline-none transition-all placeholder:text-[#bbcabf]/30 ${
-                    fullName === '' ? 'border-white/5' : 'border-[#4edea3]'
+                    fullName === "" ? "border-white/5" : "border-[#4edea3]"
                   }`}
                   placeholder="John Doe"
                   value={fullName}
@@ -237,20 +244,14 @@ export default function Login({ onLoginSuccess }: LoginProps) {
                 <input
                   type="text"
                   className={`w-full bg-[#161616] border rounded-lg px-3 py-2 text-xs text-[#e5e2e1] focus:outline-none transition-all placeholder:text-[#bbcabf]/30 ${
-                    signupUsername === ''
-                      ? 'border-white/5'
-                      : isUsernameValid
-                      ? 'border-[#4edea3]'
-                      : 'border-[#ffb4ab]'
+                    signupUsername === "" ? "border-white/5" : isUsernameValid ? "border-[#4edea3]" : "border-[#ffb4ab]"
                   }`}
                   placeholder="johndoe"
                   value={signupUsername}
-                  onChange={(e) => setSignupUsername(e.target.value.toLowerCase().replace(/\s/g, ''))}
+                  onChange={(e) => setSignupUsername(e.target.value.toLowerCase().replace(/\s/g, ""))}
                   required
                 />
-                {signupUsername !== '' && !isUsernameValid && (
-                  <div className="text-[#ffb4ab] text-[10px] mt-0.5">No spaces are allowed in username.</div>
-                )}
+                {signupUsername !== "" && !isUsernameValid && <div className="text-[#ffb4ab] text-[10px] mt-0.5">No spaces are allowed in username.</div>}
               </div>
             </div>
 
@@ -260,35 +261,27 @@ export default function Login({ onLoginSuccess }: LoginProps) {
                 <input
                   type="email"
                   className={`w-full bg-[#161616] border rounded-lg px-3 py-2 text-xs text-[#e5e2e1] focus:outline-none transition-all placeholder:text-[#bbcabf]/30 ${
-                    signupEmail === ''
-                      ? 'border-white/5'
-                      : isEmailValid
-                      ? 'border-[#4edea3]'
-                      : 'border-[#ffb4ab]'
+                    signupEmail === "" ? "border-white/5" : isEmailValid ? "border-[#4edea3]" : "border-[#ffb4ab]"
                   }`}
                   placeholder="john@example.com"
                   value={signupEmail}
                   onChange={(e) => setSignupEmail(e.target.value)}
                   required
                 />
-                {signupEmail !== '' && !isEmailValid && (
-                  <div className="text-[#ffb4ab] text-[10px] mt-0.5">Invalid email format.</div>
-                )}
+                {signupEmail !== "" && !isEmailValid && <div className="text-[#ffb4ab] text-[10px] mt-0.5">Invalid email format.</div>}
               </div>
               <div>
                 <label className="block text-xs uppercase tracking-wider font-mono text-[#bbcabf] mb-1">Phone Number (Optional)</label>
                 <input
                   type="tel"
                   className={`w-full bg-[#161616] border rounded-lg px-3 py-2 text-xs text-[#e5e2e1] focus:outline-none transition-all placeholder:text-[#bbcabf]/30 ${
-                    signupPhone === '' ? 'border-white/5' : isPhoneValid ? 'border-[#4edea3]' : 'border-[#ffb4ab]'
+                    signupPhone === "" ? "border-white/5" : isPhoneValid ? "border-[#4edea3]" : "border-[#ffb4ab]"
                   }`}
                   placeholder="+1 (555) 000-0000"
                   value={signupPhone}
                   onChange={(e) => setSignupPhone(e.target.value)}
                 />
-                {signupPhone !== '' && !isPhoneValid && (
-                  <div className="text-[#ffb4ab] text-[10px] mt-0.5">Invalid phone characters.</div>
-                )}
+                {signupPhone !== "" && !isPhoneValid && <div className="text-[#ffb4ab] text-[10px] mt-0.5">Invalid phone characters.</div>}
               </div>
             </div>
 
@@ -298,7 +291,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
                 <input
                   type="password"
                   className={`w-full bg-[#161616] border rounded-lg px-3 py-2 text-xs text-[#e5e2e1] focus:outline-none transition-all placeholder:text-[#bbcabf]/30 ${
-                    signupPass === '' ? 'border-white/5' : isPasswordValid ? 'border-[#4edea3]' : 'border-[#ffb4ab]'
+                    signupPass === "" ? "border-white/5" : isPasswordValid ? "border-[#4edea3]" : "border-[#ffb4ab]"
                   }`}
                   placeholder="••••••••"
                   value={signupPass}
@@ -315,20 +308,14 @@ export default function Login({ onLoginSuccess }: LoginProps) {
                 <input
                   type="password"
                   className={`w-full bg-[#161616] border rounded-lg px-3 py-2 text-xs text-[#e5e2e1] focus:outline-none transition-all placeholder:text-[#bbcabf]/30 ${
-                    signupConfirm === ''
-                      ? 'border-white/5'
-                      : isConfirmValid
-                      ? 'border-[#4edea3]'
-                      : 'border-[#ffb4ab]'
+                    signupConfirm === "" ? "border-white/5" : isConfirmValid ? "border-[#4edea3]" : "border-[#ffb4ab]"
                   }`}
                   placeholder="••••••••"
                   value={signupConfirm}
                   onChange={(e) => setSignupConfirm(e.target.value)}
                   required
                 />
-                {signupConfirm !== '' && !isConfirmValid && (
-                  <div className="text-[#ffb4ab] text-[10px] mt-0.5">Passwords do not match.</div>
-                )}
+                {signupConfirm !== "" && !isConfirmValid && <div className="text-[#ffb4ab] text-[10px] mt-0.5">Passwords do not match.</div>}
               </div>
             </div>
 
@@ -341,7 +328,6 @@ export default function Login({ onLoginSuccess }: LoginProps) {
             </button>
           </form>
         </div>
-
       </div>
     </div>
   );
