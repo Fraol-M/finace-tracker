@@ -1,7 +1,7 @@
 <?php
-/**
- * POST /api/auth/signup
- * Register a new user account.
+/*
+ POST /api/auth/signup
+ Register a new user account.
  */
 
 require_once __DIR__ . '/../../config/database.php';
