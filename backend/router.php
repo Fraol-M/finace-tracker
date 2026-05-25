@@ -22,10 +22,14 @@ $routes = [
     'PUT /api/transactions/update'   => __DIR__ . '/api/transactions/update.php',
     'DELETE /api/transactions/delete' => __DIR__ . '/api/transactions/delete.php',
 
+    'POST /api/budget/create'        => __DIR__ . '/api/budget/create.php',
+    'GET /api/budget'                => __DIR__ . '/api/budget/index.php',
+
     'POST /api/ai/chat'              => __DIR__ . '/api/ai/chat.php',
     'POST /api/ai/parse-transaction' => __DIR__ . '/api/ai/parse-transaction.php',
     'POST /api/ai/parse-receipt'     => __DIR__ . '/api/ai/parse-receipt.php',
     'POST /api/ai/predict'           => __DIR__ . '/api/ai/predict.php',
+    'POST /api/ai/analyze-budget'    => __DIR__ . '/api/ai/analyze-budget.php',
 ];
 
 $routeKey = "$method $uri";

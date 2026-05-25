@@ -6,6 +6,7 @@ import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import TablePage from './components/TablePage';
 import YearlyPage from './components/YearlyPage';
+import BudgetPlanner from './components/BudgetPlanner';
 import AdminPage from './components/AdminPage';
 import Sidebar from './components/Sidebar';
 import ChatPanel from './components/ChatPanel';
@@ -119,6 +120,7 @@ function AppContent() {
       case 'dashboard': return 'FINPRECISION DASHBOARD';
       case 'table': return 'MONTHLY TRANSACTIONS';
       case 'yearly': return 'YEARLY ANALYTICS';
+      case 'budget': return 'SMART BUDGET PLANNER';
       default: return 'FINPRECISION';
     }
   };
@@ -208,6 +210,10 @@ function AppContent() {
 
             {currentUser.role === 'user' && activeTab === 'yearly' && (
               <YearlyPage />
+            )}
+
+            {currentUser.role === 'user' && activeTab === 'budget' && (
+              <BudgetPlanner />
             )}
 
             {currentUser.role === 'admin' && activeTab === 'users' && (

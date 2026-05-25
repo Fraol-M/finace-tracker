@@ -17,7 +17,14 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}) {
     headers,
   });
 
-  const data = await response.json();
+  const raw = await response.text();
+  let data: any = {};
+  try {
+    data = raw ? JSON.parse(raw) : {};
+  } catch (err) {
+    const snippet = raw ? raw.slice(0, 200) : 'Empty response body';
+    throw new Error(`API returned non-JSON response (${response.status}): ${snippet}`);
+  }
 
   if (!response.ok) {
     if (response.status === 401) {

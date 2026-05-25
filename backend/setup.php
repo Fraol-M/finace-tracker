@@ -51,6 +51,32 @@ try {
     echo "[OK] Table 'transactions' created/verified.\n";
 
     $pdo->exec("
+        CREATE TABLE IF NOT EXISTS budget_plans (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id VARCHAR(50) NOT NULL,
+            month CHAR(7) NOT NULL,
+            monthly_income DECIMAL(12,2) NOT NULL,
+            rent DECIMAL(12,2) DEFAULT 0,
+            utilities DECIMAL(12,2) DEFAULT 0,
+            transportation DECIMAL(12,2) DEFAULT 0,
+            food DECIMAL(12,2) DEFAULT 0,
+            insurance DECIMAL(12,2) DEFAULT 0,
+            subscriptions DECIMAL(12,2) DEFAULT 0,
+            other_bills DECIMAL(12,2) DEFAULT 0,
+            savings_goal DECIMAL(12,2) DEFAULT 0,
+            has_vacation TINYINT(1) DEFAULT 0,
+            vacation_budget DECIMAL(12,2) DEFAULT 0,
+            ai_recommendations JSON NULL,
+            spending_calendar JSON NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            UNIQUE KEY unique_user_month (user_id, month),
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    ");
+    echo "[OK] Table 'budget_plans' created/verified.\n";
+
+    $pdo->exec("
         CREATE TABLE IF NOT EXISTS auth_tokens (
             id INT AUTO_INCREMENT PRIMARY KEY,
             user_id VARCHAR(50) NOT NULL,

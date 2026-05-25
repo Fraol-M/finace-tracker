@@ -4,6 +4,7 @@ import {
   LayoutDashboard, 
   Table, 
   Calendar, 
+  Wallet,
   Users, 
   LogOut, 
   Fingerprint, 
@@ -75,6 +76,15 @@ export default function Sidebar({
           >
             <Calendar className="w-4 h-4" />
             <span>Yearly</span>
+          </button>
+
+          <button 
+            id="linkBudget"
+            onClick={() => handleTabClick('budget')}
+            className={getButtonClass('budget')}
+          >
+            <Wallet className="w-4 h-4" />
+            <span>Budget</span>
           </button>
 
           {/* AI Assistant divider + button */}
