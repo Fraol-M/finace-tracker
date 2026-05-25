@@ -1,7 +1,7 @@
 <?php
-/**
- * POST /api/auth/logout
- * Invalidate the current auth token.
+/*
+ POST /api/auth/logout
+ Invalidate the current auth token.
  */
 
 require_once __DIR__ . '/../../config/database.php';
