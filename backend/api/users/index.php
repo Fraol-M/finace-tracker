@@ -1,7 +1,7 @@
 <?php
-/**
- * GET /api/users
- * List all users (admin only). Excludes password hashes.
+/*
+ GET /api/users
+ List all users (admin only). Excludes password hashes.
  */
 
 require_once __DIR__ . '/../../middleware/auth.php';
