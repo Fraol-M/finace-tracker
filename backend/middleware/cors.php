@@ -1,7 +1,7 @@
 <?php
-/**
- * CORS middleware — allows the Vite dev server (localhost:3000) to call the API.
- * In production the proxy eliminates CORS, but this is a safety net.
+/*
+ CORS middleware — allows the Vite dev server (localhost:3000) to call the API.
+ In production the proxy eliminates CORS, but this is a safety net.
  */
 
 header('Access-Control-Allow-Origin: http://localhost:3000');
