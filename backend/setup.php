@@ -1,7 +1,7 @@
 <?php
-/**
- * One-time setup script: creates database, tables, and seeds initial data.
- * Run with: C:\xampp\php\php.exe backend/setup.php
+/*
+ One-time setup script: creates database, tables, and seeds initial data.
+ Run with: C:\xampp\php\php.exe backend/setup.php
  */
 
 echo "=== FinPrecision Database Setup ===\n\n";
