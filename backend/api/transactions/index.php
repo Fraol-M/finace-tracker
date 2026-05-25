@@ -1,8 +1,6 @@
 <?php
-/**
- * GET /api/transactions
- * Get all transactions for the authenticated user.
- */
+
+
 
 require_once __DIR__ . '/../../middleware/auth.php';
 
@@ -19,7 +17,7 @@ $stmt = $db->prepare('
 $stmt->execute([':uid' => $user['id']]);
 $rows = $stmt->fetchAll();
 
-// Format for frontend (amount as float, date as string)
+
 $transactions = array_map(function($row) {
     return [
         'id'       => (int)$row['id'],

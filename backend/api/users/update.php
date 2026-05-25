@@ -1,8 +1,6 @@
 <?php
-/**
- * PUT /api/users/update
- * Update a user's profile (admin only).
- */
+
+
 
 require_once __DIR__ . '/../../middleware/auth.php';
 
@@ -28,14 +26,14 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
 $db = getDB();
 
-// Check user exists
+
 $stmt = $db->prepare('SELECT id FROM users WHERE id = :id');
 $stmt->execute([':id' => $userId]);
 if (!$stmt->fetch()) {
     errorResponse('User not found', 404);
 }
 
-// Check unique constraints (exclude current user)
+
 $stmt = $db->prepare('
     SELECT id FROM users
     WHERE (LOWER(username) = LOWER(:username) OR LOWER(email) = LOWER(:email))
@@ -47,7 +45,7 @@ if ($stmt->fetch()) {
     errorResponse('Username or email already taken by another user', 409);
 }
 
-// Update
+
 $stmt = $db->prepare('
     UPDATE users SET username = :username, full_name = :full_name, email = :email, phone = :phone
     WHERE id = :id

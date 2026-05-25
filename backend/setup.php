@@ -1,8 +1,6 @@
 <?php
-/**
- * One-time setup script: creates database, tables, and seeds initial data.
- * Run with: C:\xampp\php\php.exe backend/setup.php
- */
+
+
 
 echo "=== FinPrecision Database Setup ===\n\n";
 
@@ -12,7 +10,7 @@ $username = 'root';
 $password = '';
 
 try {
-    // 1. Connect without database to create it
+    
     $pdo = new PDO("mysql:host={$host};port={$port};charset=utf8mb4", $username, $password, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     ]);
@@ -22,7 +20,7 @@ try {
 
     $pdo->exec("USE finprecision");
 
-    // 2. Create tables
+    
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS users (
             id VARCHAR(50) PRIMARY KEY,
@@ -66,7 +64,7 @@ try {
     ");
     echo "[OK] Table 'auth_tokens' created/verified.\n";
 
-    // 3. Seed users (skip if already exist)
+    
     $checkUser = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
 
     if ((int)$checkUser === 0) {
@@ -103,13 +101,13 @@ try {
         echo "\n[SKIP] Users table already has data ($checkUser rows).\n";
     }
 
-    // 4. Seed transactions for 'kaleb' user
+    
     $checkTx = $pdo->query("SELECT COUNT(*) FROM transactions")->fetchColumn();
 
     if ((int)$checkTx === 0) {
         echo "\n--- Seeding transactions ---\n";
 
-        // Use current month prefix
+        
         $prefix = date('Y-m');
 
         $transactions = [

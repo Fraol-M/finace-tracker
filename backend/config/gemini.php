@@ -1,11 +1,9 @@
 <?php
-/**
- * Gemini API helper.
- * Calls the Gemini REST API directly via curl — no Composer dependencies needed.
- */
+
+
 
 function getGeminiApiKey(): string {
-    // Try .env file first
+    
     $envFile = __DIR__ . '/../../.env';
     if (file_exists($envFile)) {
         $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -19,26 +17,21 @@ function getGeminiApiKey(): string {
             }
         }
     }
-    // Fallback to environment variable
+    
     $key = getenv('GEMINI_API_KEY');
     if ($key) return $key;
 
     throw new \RuntimeException('GEMINI_API_KEY not found in .env or environment');
 }
 
-/**
- * Call Gemini API for text-only generation.
- *
- * @param string $systemPrompt  System instruction for the model
- * @param array  $messages      Array of ['role' => 'user'|'model', 'text' => '...']
- * @return string The model's text response
- */
+
+
 function callGemini(string $systemPrompt, array $messages): string {
     $apiKey = getGeminiApiKey();
     $model = 'gemini-2.5-flash';
     $url = "https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent";
 
-    // Build contents array
+    
     $contents = [];
     foreach ($messages as $msg) {
         $contents[] = [
@@ -61,15 +54,8 @@ function callGemini(string $systemPrompt, array $messages): string {
     return geminiRequest($url, $payload, $apiKey);
 }
 
-/**
- * Call Gemini API with an image (multimodal / vision).
- *
- * @param string $systemPrompt  System instruction
- * @param string $textPrompt    Text prompt to accompany the image
- * @param string $base64Image   Base64-encoded image data (without data URI prefix)
- * @param string $mimeType      Image MIME type (e.g., 'image/jpeg')
- * @return string The model's text response
- */
+
+
 function callGeminiVision(string $systemPrompt, string $textPrompt, string $base64Image, string $mimeType = 'image/jpeg'): string {
     $apiKey = getGeminiApiKey();
     $model = 'gemini-2.5-flash';
@@ -102,9 +88,8 @@ function callGeminiVision(string $systemPrompt, string $textPrompt, string $base
     return geminiRequest($url, $payload, $apiKey);
 }
 
-/**
- * Low-level curl request to Gemini.
- */
+
+
 function geminiRequest(string $url, array $payload, string $apiKey): string {
     $jsonPayload = json_encode($payload);
 
@@ -137,7 +122,7 @@ function geminiRequest(string $url, array $payload, string $apiKey): string {
         throw new \RuntimeException("Gemini API error: $errorMsg");
     }
 
-    // Extract text from response
+    
     $text = $result['candidates'][0]['content']['parts'][0]['text'] ?? '';
     if (empty($text)) {
         throw new \RuntimeException('Gemini returned an empty response');

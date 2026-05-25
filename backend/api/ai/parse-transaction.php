@@ -1,11 +1,6 @@
 <?php
-/**
- * POST /api/ai/parse-transaction
- * Parse natural language text into a structured transaction.
- * 
- * Body: { text: string }
- * Returns: { title, amount, category, date, type, icon }
- */
+
+
 
 require_once __DIR__ . '/../../middleware/auth.php';
 require_once __DIR__ . '/../../config/gemini.php';
@@ -54,7 +49,7 @@ $messages = [
 try {
     $response = callGemini($systemPrompt, $messages);
     
-    // Clean the response (remove possible markdown code fences)
+    
     $clean = trim($response);
     $clean = preg_replace('/^```json\s*/i', '', $clean);
     $clean = preg_replace('/^```\s*/i', '', $clean);
@@ -67,11 +62,11 @@ try {
         errorResponse('Could not parse transaction from your description. Try being more specific.', 422);
     }
     
-    // Check if it's an array of transactions or a single transaction
+    
     $isMultiple = isset($parsed[0]);
     
     if ($isMultiple) {
-        // Validate and normalize each transaction
+        
         foreach ($parsed as &$tx) {
             if (!isset($tx['title']) || !isset($tx['amount'])) {
                 errorResponse('Could not parse all transactions. Try being more specific.', 422);
@@ -84,7 +79,7 @@ try {
         }
         successResponse(['transactions' => $parsed, 'multiple' => true], 'Multiple transactions parsed successfully');
     } else {
-        // Single transaction
+        
         if (!isset($parsed['title']) || !isset($parsed['amount'])) {
             errorResponse('Could not parse transaction from your description. Try being more specific.', 422);
         }

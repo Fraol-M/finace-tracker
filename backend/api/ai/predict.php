@@ -1,10 +1,6 @@
 <?php
-/**
- * POST /api/ai/predict
- * Predictive cash flow analysis and "Safe to Spend" calculation.
- * 
- * Returns: { safeToSpend, predictedEndBalance, monthlyIncome, monthlyExpense, insights, projections }
- */
+
+
 
 require_once __DIR__ . '/../../middleware/auth.php';
 require_once __DIR__ . '/../../config/gemini.php';
@@ -12,7 +8,7 @@ require_once __DIR__ . '/../../config/database.php';
 
 $user = requireAuth();
 
-// Fetch ALL user transactions
+
 $db = getDB();
 $stmt = $db->prepare('
     SELECT title, amount, category, date, type
@@ -35,7 +31,7 @@ if (count($transactions) < 2) {
     exit;
 }
 
-// Build data for Gemini
+
 $txLines = [];
 foreach ($transactions as $tx) {
     $txLines[] = "{$tx['date']} | {$tx['type']} | {$tx['title']} | \${$tx['amount']} | {$tx['category']}";
@@ -81,7 +77,7 @@ $messages = [
 try {
     $response = callGemini($systemPrompt, $messages);
     
-    // Clean the response
+    
     $clean = trim($response);
     $clean = preg_replace('/^```json\s*/i', '', $clean);
     $clean = preg_replace('/^```\s*/i', '', $clean);
@@ -91,7 +87,7 @@ try {
     $parsed = json_decode($clean, true);
     
     if (!$parsed) {
-        // Fallback: basic calculation without AI
+        
         $totalIncome = 0;
         $totalExpense = 0;
         foreach ($transactions as $tx) {
@@ -111,7 +107,7 @@ try {
         ];
     }
     
-    // Ensure numeric types
+    
     $parsed['safeToSpend'] = (float)($parsed['safeToSpend'] ?? 0);
     $parsed['predictedEndBalance'] = (float)($parsed['predictedEndBalance'] ?? 0);
     $parsed['monthlyIncome'] = (float)($parsed['monthlyIncome'] ?? 0);

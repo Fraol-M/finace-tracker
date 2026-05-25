@@ -1,8 +1,6 @@
 <?php
-/**
- * Auth middleware — validates Bearer token from the Authorization header.
- * Sets $GLOBALS['auth_user'] with the authenticated user row.
- */
+
+
 
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../helpers/response.php';
@@ -30,7 +28,7 @@ function requireAuth(): array {
         errorResponse('Invalid or expired token', 401);
     }
 
-    // Normalize boolean
+    
     $user['is_unverified'] = (bool)$user['is_unverified'];
 
     return $user;

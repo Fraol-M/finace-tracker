@@ -1,10 +1,6 @@
 <?php
-/**
- * POST /api/ai/chat
- * Conversational analytics + personality-driven spending reviews.
- * 
- * Body: { message: string, persona?: 'default'|'ramsay'|'coach'|'pirate', history?: array }
- */
+
+
 
 require_once __DIR__ . '/../../middleware/auth.php';
 require_once __DIR__ . '/../../config/gemini.php';
@@ -21,7 +17,7 @@ if ($message === '') {
     errorResponse('Message is required', 400);
 }
 
-// Fetch user's transactions for context
+
 $db = getDB();
 $stmt = $db->prepare('
     SELECT title, amount, category, date, type
@@ -33,7 +29,7 @@ $stmt = $db->prepare('
 $stmt->execute([':uid' => $user['id']]);
 $transactions = $stmt->fetchAll();
 
-// Build transaction summary for context
+
 $totalIncome = 0;
 $totalExpense = 0;
 $categoryTotals = [];
@@ -70,7 +66,7 @@ USER FINANCIAL DATA (as of {$today}):
 RECENT TRANSACTIONS (most recent first):
 " . implode("\n", array_slice($txLines, 0, 50));
 
-// Build system prompt based on persona
+
 $personaPrompts = [
     'default' => "You are FinPrecision AI, a friendly and professional financial assistant. You help users understand their spending patterns, answer questions about their finances, and provide actionable advice. Be concise but thorough. Use numbers and percentages when relevant. Format your responses with clear structure using markdown when helpful.",
 
@@ -83,7 +79,7 @@ $personaPrompts = [
 
 $systemPrompt = ($personaPrompts[$persona] ?? $personaPrompts['default']) . "\n\nHere is the user's financial data that you should use to answer their questions:\n" . $dataContext;
 
-// Build message history for multi-turn
+
 $messages = [];
 foreach ($history as $h) {
     $role = ($h['role'] ?? 'user') === 'assistant' ? 'model' : 'user';
