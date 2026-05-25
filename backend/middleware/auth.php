@@ -1,7 +1,7 @@
 <?php
-/**
- * Auth middleware — validates Bearer token from the Authorization header.
- * Sets $GLOBALS['auth_user'] with the authenticated user row.
+/*
+ Auth middleware — validates Bearer token from the Authorization header.
+ Sets $GLOBALS['auth_user'] with the authenticated user row.
  */
 
 require_once __DIR__ . '/../config/database.php';
