@@ -11,7 +11,7 @@ function getDB(): PDO {
     $port = 3306;
     $dbname = 'finprecision';
     $username = 'root';
-    $password = ''; // XAMPP default: no password
+    $password = ''; 
 
     try {
         $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4";

@@ -16,7 +16,6 @@ if ($imageData === '') {
 
 if (str_contains($imageData, ',')) {
     $parts = explode(',', $imageData, 2);
-
     if (preg_match('/data:([^;]+);/', $parts[0], $matches)) {
         $mimeType = $matches[1];
     }
@@ -70,7 +69,7 @@ try {
     }
     
     $parsed['amount'] = (float)($parsed['amount'] ?? 0);
-    if ($parsed['amount'] > 0) $parsed['amount'] = -$parsed['amount']; // ensure negative
+    if ($parsed['amount'] > 0) $parsed['amount'] = -$parsed['amount']; 
     $parsed['date'] = $parsed['date'] ?? $today;
     $parsed['type'] = 'expense';
     $parsed['icon'] = $parsed['icon'] ?? 'receipt';

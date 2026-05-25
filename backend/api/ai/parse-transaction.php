@@ -47,23 +47,22 @@ $messages = [
 
 try {
     $response = callGemini($systemPrompt, $messages);
-    
+
     $clean = trim($response);
     $clean = preg_replace('/^```json\s*/i', '', $clean);
     $clean = preg_replace('/^```\s*/i', '', $clean);
     $clean = preg_replace('/\s*```$/i', '', $clean);
     $clean = trim($clean);
-    
+
     $parsed = json_decode($clean, true);
-    
+
     if (!$parsed) {
         errorResponse('Could not parse transaction from your description. Try being more specific.', 422);
     }
-    
-    $isMultiple = isset($parsed[0]);
-    
-    if ($isMultiple) {
 
+    $isMultiple = isset($parsed[0]);
+
+    if ($isMultiple) {
         foreach ($parsed as &$tx) {
             if (!isset($tx['title']) || !isset($tx['amount'])) {
                 errorResponse('Could not parse all transactions. Try being more specific.', 422);
@@ -76,7 +75,6 @@ try {
         }
         successResponse(['transactions' => $parsed, 'multiple' => true], 'Multiple transactions parsed successfully');
     } else {
-
         if (!isset($parsed['title']) || !isset($parsed['amount'])) {
             errorResponse('Could not parse transaction from your description. Try being more specific.', 422);
         }
@@ -85,7 +83,7 @@ try {
         $parsed['type'] = $parsed['type'] ?? ($parsed['amount'] < 0 ? 'expense' : 'income');
         $parsed['icon'] = $parsed['icon'] ?? 'category';
         $parsed['category'] = $parsed['category'] ?? 'Other';
-        
+
         successResponse($parsed, 'Transaction parsed successfully');
     }
 } catch (\Exception $e) {
