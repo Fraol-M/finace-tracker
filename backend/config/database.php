@@ -1,7 +1,7 @@
 <?php
-/**
- * Database connection helper.
- * Returns a PDO instance connected to the finprecision database.
+/*
+ Database connection helper.
+ Returns a PDO instance connected to the finprecision database.
  */
 
 function getDB(): PDO {
