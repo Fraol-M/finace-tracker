@@ -1,7 +1,7 @@
 <?php
-/**
- * POST /api/transactions
- * Create a new transaction for the authenticated user.
+/*
+ POST /api/transactions
+ Create a new transaction for the authenticated user.
  */
 
 require_once __DIR__ . '/../../middleware/auth.php';
