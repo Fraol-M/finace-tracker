@@ -1,7 +1,7 @@
 <?php
-/**
- * PUT /api/users/update
- * Update a user's profile (admin only).
+/*
+ PUT /api/users/update
+ Update a user's profile (admin only).
  */
 
 require_once __DIR__ . '/../../middleware/auth.php';
@@ -28,7 +28,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
 $db = getDB();
 
-// Check user exists
+// Check if user exists
 $stmt = $db->prepare('SELECT id FROM users WHERE id = :id');
 $stmt->execute([':id' => $userId]);
 if (!$stmt->fetch()) {
