@@ -1,7 +1,5 @@
 <?php
-/**
- * JSON response helpers for the API.
- */
+
 
 function jsonResponse($data, int $statusCode = 200): void {
     http_response_code($statusCode);
@@ -26,9 +24,7 @@ function errorResponse(string $message, int $statusCode = 400): void {
     ], $statusCode);
 }
 
-/**
- * Read JSON request body and return as associative array.
- */
+
 function getJsonBody(): array {
     $raw = file_get_contents('php://input');
     $data = json_decode($raw, true);

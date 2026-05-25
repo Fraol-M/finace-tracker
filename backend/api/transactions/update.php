@@ -1,8 +1,5 @@
 <?php
-/**
- * PUT /api/transactions/update
- * Update an existing transaction (must belong to authenticated user).
- */
+
 
 require_once __DIR__ . '/../../middleware/auth.php';
 
@@ -25,7 +22,6 @@ if ($title === '' || $amount === null || $category === '' || $date === '') {
 
 $db = getDB();
 
-// Verify ownership
 $stmt = $db->prepare('SELECT id, type FROM transactions WHERE id = :id AND uid = :uid');
 $stmt->execute([':id' => (int)$txId, ':uid' => $user['id']]);
 $existing = $stmt->fetch();

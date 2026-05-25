@@ -1,8 +1,5 @@
 <?php
-/**
- * GET /api/auth/me
- * Validate current token and return user data.
- */
+
 
 require_once __DIR__ . '/../../middleware/auth.php';
 

@@ -1,8 +1,5 @@
 <?php
-/**
- * POST /api/auth/signup
- * Register a new user account.
- */
+
 
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../helpers/response.php';
@@ -15,7 +12,6 @@ $email    = trim($body['email'] ?? '');
 $phone    = trim($body['phone'] ?? '-');
 $password = $body['password'] ?? '';
 
-// Validation
 if ($fullName === '') {
     errorResponse('Full name is required', 400);
 }
@@ -31,7 +27,6 @@ if (strlen($password) < 8 || !preg_match('/[0-9]/', $password) || !preg_match('/
 
 $db = getDB();
 
-// Check for duplicate username or email
 $stmt = $db->prepare('
     SELECT id FROM users
     WHERE LOWER(username) = LOWER(:username) OR LOWER(email) = LOWER(:email)
@@ -43,7 +38,6 @@ if ($stmt->fetch()) {
     errorResponse('Username or email already exists', 409);
 }
 
-// Create user
 $userId = 'u_' . time() . '_' . bin2hex(random_bytes(4));
 $passwordHash = password_hash($password, PASSWORD_BCRYPT);
 

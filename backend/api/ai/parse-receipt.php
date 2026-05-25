@@ -1,11 +1,5 @@
 <?php
-/**
- * POST /api/ai/parse-receipt
- * Extract transaction data from a receipt/invoice image using Gemini Vision.
- * 
- * Body: { image: string (base64), mimeType?: string }
- * Returns: { title, amount, category, date, type, icon, items?: array }
- */
+
 
 require_once __DIR__ . '/../../middleware/auth.php';
 require_once __DIR__ . '/../../config/gemini.php';
@@ -20,10 +14,9 @@ if ($imageData === '') {
     errorResponse('Image data is required', 400);
 }
 
-// Strip data URI prefix if present (e.g., "data:image/jpeg;base64,")
 if (str_contains($imageData, ',')) {
     $parts = explode(',', $imageData, 2);
-    // Extract mime type from data URI if available
+
     if (preg_match('/data:([^;]+);/', $parts[0], $matches)) {
         $mimeType = $matches[1];
     }
@@ -64,7 +57,6 @@ $textPrompt = "Please analyze this receipt/invoice image and extract the transac
 try {
     $response = callGeminiVision($systemPrompt, $textPrompt, $imageData, $mimeType);
     
-    // Clean the response
     $clean = trim($response);
     $clean = preg_replace('/^```json\s*/i', '', $clean);
     $clean = preg_replace('/^```\s*/i', '', $clean);
@@ -77,7 +69,6 @@ try {
         errorResponse('Could not extract data from this image. Please try a clearer photo.', 422);
     }
     
-    // Ensure proper types
     $parsed['amount'] = (float)($parsed['amount'] ?? 0);
     if ($parsed['amount'] > 0) $parsed['amount'] = -$parsed['amount']; // ensure negative
     $parsed['date'] = $parsed['date'] ?? $today;

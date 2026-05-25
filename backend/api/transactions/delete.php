@@ -1,8 +1,5 @@
 <?php
-/**
- * DELETE /api/transactions/delete
- * Delete a transaction (must belong to authenticated user).
- */
+
 
 require_once __DIR__ . '/../../middleware/auth.php';
 
@@ -17,7 +14,6 @@ if ($txId === null) {
 
 $db = getDB();
 
-// Verify ownership
 $stmt = $db->prepare('SELECT id FROM transactions WHERE id = :id AND uid = :uid');
 $stmt->execute([':id' => (int)$txId, ':uid' => $user['id']]);
 
