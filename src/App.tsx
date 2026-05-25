@@ -24,7 +24,7 @@ function AppContent() {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
-  // Verify token on mount
+  // Verify token
   useEffect(() => {
     const verifyAuth = async () => {
       const token = localStorage.getItem('fp_token');
@@ -48,7 +48,7 @@ function AppContent() {
     return () => window.removeEventListener('auth-expired', handleAuthExpired);
   }, []);
 
-  // Set default tabs based on user role upon login
+  // Set default tabs based on user role 
   useEffect(() => {
     if (currentUser) {
       if (currentUser.role === 'admin') {
@@ -118,7 +118,6 @@ function AppContent() {
     <FinanceProvider userId={currentUser?.id}>
       <div className="min-h-screen bg-[#131313] text-[#e5e2e1] flex relative overflow-x-hidden font-sans select-none antialiased selection:bg-[#4edea3]/20 select-none">
         
-        {/* SIDEBAR NAVIGATION CONTROLS */}
         <Sidebar
           currentUser={currentUser}
           activeTab={activeTab}
@@ -128,13 +127,10 @@ function AppContent() {
           setIsMobileSidebarOpen={setIsMobileSidebarOpen}
         />
 
-        {/* 2. MAIN CORE LAYOUT FRAME */}
         <main className="flex-1 flex flex-col md:ml-64 w-full relative min-h-screen pb-12">
           
-          {/* Sticky Top Bar matching layouts exactly */}
           <header className="w-full sticky top-0 z-30 bg-[#131313]/80 backdrop-blur-xl border-b border-white/5 shadow-sm flex items-center justify-between h-16 px-6 md:px-10">
             
-            {/* Mobile responsive toggle header */}
             <div className="md:hidden flex items-center gap-3">
               <button 
                 onClick={() => setIsMobileSidebarOpen(true)}
@@ -145,17 +141,16 @@ function AppContent() {
               <span className="font-extrabold text-sm text-[#4edea3] tracking-tight">FinPrecision</span>
             </div>
 
-            {/* Desktop display labels */}
             <div className="hidden md:block">
               <h2 className="text-[11px] font-mono tracking-widest text-[#bbcabf] font-semibold uppercase">
                 {getHeaderTitle()}
               </h2>
             </div>
 
-            {/* Top layout action widgets */}
+            {/* profile btn */}
             <div className="flex items-center gap-4 relative">
               
-              {/* Account visual avatar profile section with floating dropdown menu */}
+              
               <div className="relative">
                 <button 
                   onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
@@ -186,7 +181,7 @@ function AppContent() {
             </div>
           </header>
 
-          {/* Dynamic active visual view partition container with light fluid animations padding */}
+          {/* Dynamic active view */}
           <div className="p-6 md:p-10 max-w-7xl mx-auto w-full flex-1">
             {currentUser.role === 'user' && activeTab === 'dashboard' && (
               <Dashboard currentUser={currentUser} />

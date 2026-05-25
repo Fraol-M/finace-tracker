@@ -19,5 +19,4 @@ export interface Transaction {
   uid?: string;
 }
 
-/** Payload for creating a transaction (server assigns id). */
 export type NewTransaction = Omit<Transaction, 'id' | 'uid'>;
