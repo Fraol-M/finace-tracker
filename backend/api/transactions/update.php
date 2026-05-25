@@ -1,7 +1,7 @@
 <?php
-/**
- * PUT /api/transactions/update
- * Update an existing transaction (must belong to authenticated user).
+/*
+ PUT /api/transactions/update
+ Update an existing transaction (must belong to authenticated user).
  */
 
 require_once __DIR__ . '/../../middleware/auth.php';
