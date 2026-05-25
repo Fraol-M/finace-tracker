@@ -1,7 +1,7 @@
 <?php
-/**
- * DELETE /api/users/delete
- * Delete a user and their associated data (admin only).
+/*
+ DELETE /api/users/delete
+ Delete a user and their associated data (admin only).
  */
 
 require_once __DIR__ . '/../../middleware/auth.php';
@@ -22,7 +22,7 @@ if ($userId === $admin['id']) {
 
 $db = getDB();
 
-// Check user exists
+// Check if user exists
 $stmt = $db->prepare('SELECT id FROM users WHERE id = :id');
 $stmt->execute([':id' => $userId]);
 if (!$stmt->fetch()) {
