@@ -1,8 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { Transaction } from '../types';
-import { apiFetch } from '../api/client';
+import { fetchTransactions, createTransaction, updateTransaction as updateTransactionApi, deleteTransaction as deleteTransactionApi } from '../api/transactions';
 
-// Define current month, year, and prefixes dynamically
 export const currentMonth = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(new Date());
 export const currentYear = new Date().getFullYear();
 
@@ -11,8 +10,6 @@ export const CURRENT_MONTH_VAL = d.getMonth() + 1;
 export const CURRENT_MONTH_STR = String(CURRENT_MONTH_VAL).padStart(2, '0');
 export const CURRENT_MONTH_PREFIX = `${currentYear}-${CURRENT_MONTH_STR}`;
 
-
-// Centralised config for YearPage metrics calculations using dynamic year prefixes
 export const YEARLY_MONTHS_CONFIG = [
   { name: 'January', prefix: `${currentYear}-01`, short: 'J' },
   { name: 'February', prefix: `${currentYear}-02`, short: 'F' },
@@ -40,10 +37,10 @@ const FinanceContext = createContext<FinanceContextType | undefined>(undefined);
 export function FinanceProvider({ userId, children }: { userId?: string; children: React.ReactNode }) {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
-  const fetchTransactions = useCallback(async () => {
+  const loadTransactions = useCallback(async () => {
     if (!userId) return;
     try {
-      const data = await apiFetch('/transactions');
+      const data = await fetchTransactions();
       setTransactions(data);
     } catch (err) {
       console.error('Failed to load transactions:', err);
@@ -51,15 +48,12 @@ export function FinanceProvider({ userId, children }: { userId?: string; childre
   }, [userId]);
 
   useEffect(() => {
-    fetchTransactions();
-  }, [fetchTransactions]);
+    loadTransactions();
+  }, [loadTransactions]);
 
   const addTransaction = async (newTx: Transaction) => {
     try {
-      const data = await apiFetch('/transactions', {
-        method: 'POST',
-        body: JSON.stringify(newTx),
-      });
+      const data = await createTransaction(newTx);
       setTransactions(prev => [data, ...prev]);
     } catch (err) {
       console.error('Failed to add transaction:', err);
@@ -68,10 +62,7 @@ export function FinanceProvider({ userId, children }: { userId?: string; childre
 
   const updateTransaction = async (updatedTx: Transaction) => {
     try {
-      const data = await apiFetch('/transactions/update', {
-        method: 'PUT',
-        body: JSON.stringify(updatedTx),
-      });
+      const data = await updateTransactionApi(updatedTx);
       setTransactions(prev => prev.map(t => t.id === updatedTx.id ? data : t));
     } catch (err) {
       console.error('Failed to update transaction:', err);
@@ -80,10 +71,7 @@ export function FinanceProvider({ userId, children }: { userId?: string; childre
 
   const deleteTransaction = async (id: number) => {
     try {
-      await apiFetch('/transactions/delete', {
-        method: 'DELETE',
-        body: JSON.stringify({ id }),
-      });
+      await deleteTransactionApi(id);
       setTransactions(prev => prev.filter(t => t.id !== id));
     } catch (err) {
       console.error('Failed to delete transaction:', err);
@@ -94,7 +82,7 @@ export function FinanceProvider({ userId, children }: { userId?: string; childre
     transactions,
     addTransaction,
     updateTransaction,
-    deleteTransaction
+    deleteTransaction,
   }), [transactions]);
 
   return (

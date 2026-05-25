@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Landmark, TrendingUp, BarChart2, DollarSign, Activity } from 'lucide-react';
-import { useFinance, YEARLY_MONTHS_CONFIG, currentYear } from '../data/financeData';
+import { useFinance, YEARLY_MONTHS_CONFIG, currentYear } from '../contexts/FinanceContext';
 
 export default function YearlyPage() {
   const { transactions } = useFinance();

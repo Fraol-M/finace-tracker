@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { X, Send, Mic, MicOff, Camera, Sparkles, Bot, User, Loader2, ImagePlus, ChevronDown } from 'lucide-react';
 import { apiFetch } from '../api/client';
-import { useFinance } from '../data/financeData';
+import { useFinance } from '../contexts/FinanceContext';
 import useSpeechRecognition from '../hooks/useSpeechRecognition';
 
 interface Message {

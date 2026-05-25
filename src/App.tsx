@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { UserAccount, Transaction } from './types';
-import { FinanceProvider } from './data/financeData';
+import { FinanceProvider } from './contexts/FinanceContext';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import TablePage from './components/TablePage';

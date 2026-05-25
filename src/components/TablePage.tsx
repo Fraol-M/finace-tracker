@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Transaction } from '../types';
-import { useFinance } from '../data/financeData';
+import { useFinance } from '../contexts/FinanceContext';
 import { ArrowUp, ArrowDown, Search, ListFilter, ChevronRight, MoreVertical, Briefcase, TrendingUp, Check, X, Trash2, Edit2 } from 'lucide-react';
 import { getCategoryStyle } from '../utils/categoryHelpers';
 import Pagination from './Pagination';

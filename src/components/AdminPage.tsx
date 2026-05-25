@@ -100,7 +100,6 @@ export default function AdminPage({ onUpdateUser }: AdminPageProps) {
       }
     }
 
-    // Email check
     if (!email.trim()) {
       errors.email = "Email is required";
       isValid = false;
@@ -116,7 +115,6 @@ export default function AdminPage({ onUpdateUser }: AdminPageProps) {
       }
     }
 
-    // Phone checks
     if (phone.trim() !== "-" && phone.trim() !== "") {
       if (!validatePhone(phone)) {
         errors.phone = "Invalid characters";
@@ -203,9 +201,9 @@ export default function AdminPage({ onUpdateUser }: AdminPageProps) {
         </div>
       </div>
 
-      {/* Accounts List Table Card */}
+      {/* Accounts List */}
       <div className="bg-[#201f1f] rounded-xl border border-white/5 overflow-hidden flex flex-col shadow-2xl">
-        {/* Dynamic Client Query Search bar section */}
+        {/* Search bar */}
         <div className="p-4 border-b border-white/5 bg-[#1c1b1b]/30">
           <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#bbcabf]/50 w-4.5 h-4.5" />
