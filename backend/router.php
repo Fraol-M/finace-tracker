@@ -1,7 +1,7 @@
 <?php
-/**
- * Single entry-point router for the PHP backend.
- * Run with: C:\xampp\php\php.exe -S localhost:8000 backend/router.php
+/*
+ Single entry-point router for the PHP backend.
+ Run with: C:\xampp\php\php.exe -S localhost:8000 backend/router.php
  */
 
 // Load CORS first (handles OPTIONS preflight)
