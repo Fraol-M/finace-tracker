@@ -433,8 +433,6 @@ export default function ChatPanel({ isOpen, onClose }: ChatPanelProps) {
                     )}
                   </div>
                 )}
-                  </div>
-                )}
               </div>
               {msg.role === 'user' && (
                 <div className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center shrink-0 mt-0.5">
