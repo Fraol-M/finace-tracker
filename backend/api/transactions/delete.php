@@ -1,7 +1,7 @@
 <?php
-/**
- * DELETE /api/transactions/delete
- * Delete a transaction (must belong to authenticated user).
+/*
+ DELETE /api/transactions/delete
+ Delete a transaction (must belong to authenticated user).
  */
 
 require_once __DIR__ . '/../../middleware/auth.php';
