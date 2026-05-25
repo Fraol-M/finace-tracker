@@ -1,7 +1,7 @@
 <?php
-/**
- * POST /api/auth/login
- * Authenticate user with username/email + password. Returns a bearer token.
+/*
+ POST /api/auth/login
+ Authenticate user using username/email + password.
  */
 
 require_once __DIR__ . '/../../config/database.php';
