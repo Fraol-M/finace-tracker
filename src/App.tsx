@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { UserAccount, Transaction } from './types';
-import { INITIAL_USERS } from './data';
 import { FinanceProvider } from './data/financeData';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
